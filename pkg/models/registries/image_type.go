@@ -1,3 +1,19 @@
+/*
+Copyright 2020 KubeSphere Authors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package registries
 
 import (
@@ -5,26 +21,15 @@ import (
 	"time"
 )
 
-type AuthInfo struct {
-	Username   string `json:"username" description:"username"`
-	Password   string `json:"password" description:"password"`
-	ServerHost string `json:"serverhost" description:"registry server host"`
-}
-
 // ImageBlobInfo describes the info of an image.
 type ImageDetails struct {
 	// Status is the status of the image search, such as "failed","succeeded".
-	Status string `json:"status,omitempty" description:"Status is the status of the image search, such as \"succeeded\"."`
-
-	Message string `json:"message,omitempty" description:"Status message."`
-
+	Status        string         `json:"status,omitempty" description:"Status is the status of the image search, such as \"succeeded\"."`
+	Message       string         `json:"message,omitempty" description:"Status message."`
 	ImageManifest *ImageManifest `json:"imageManifest,omitempty" description:"Retrieve the manifest from the registry identified. Reference: https://docs.docker.com/registry/spec/api/#manifest"`
-
-	ImageBlob *ImageBlob `json:"imageBlob,omitempty" description:"Retrieve the blob from the registry identified. Reference: https://docs.docker.com/registry/spec/api/#blob"`
-
-	ImageTag string `json:"imageTag,omitempty" description:"image tag."`
-
-	Registry string `json:"registry,omitempty" description:"registry domain."`
+	ImageBlob     *ImageBlob     `json:"imageBlob,omitempty" description:"Retrieve the blob from the registry identified. Reference: https://docs.docker.com/registry/spec/api/#blob"`
+	ImageTag      string         `json:"imageTag,omitempty" description:"image tag."`
+	Registry      string         `json:"registry,omitempty" description:"registry domain."`
 }
 
 type ImageBlob struct {

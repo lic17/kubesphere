@@ -1,3 +1,19 @@
+/*
+Copyright 2020 KubeSphere Authors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package sonarqube
 
 import (
@@ -7,11 +23,11 @@ import (
 	"strings"
 )
 
-type SonarQubeClient struct {
+type Client struct {
 	client *sonargo.Client
 }
 
-func NewSonarQubeClient(options *SonarQubeOptions) (*SonarQubeClient, error) {
+func NewSonarQubeClient(options *Options) (*Client, error) {
 	var endpoint string
 
 	if strings.HasSuffix(options.Host, "/") {
@@ -26,10 +42,10 @@ func NewSonarQubeClient(options *SonarQubeOptions) (*SonarQubeClient, error) {
 		return nil, err
 	}
 
-	return &SonarQubeClient{client: sonar}, err
+	return &Client{client: sonar}, err
 }
 
-func NewSonarQubeClientOrDie(options *SonarQubeOptions) *SonarQubeClient {
+func NewSonarQubeClientOrDie(options *Options) *Client {
 	var endpoint string
 
 	if strings.HasSuffix(options.Host, "/") {
@@ -44,11 +60,11 @@ func NewSonarQubeClientOrDie(options *SonarQubeOptions) *SonarQubeClient {
 		panic(err)
 	}
 
-	return &SonarQubeClient{client: sonar}
+	return &Client{client: sonar}
 }
 
 // return sonarqube client
 // Also we can wrap some methods to avoid direct use sonar client
-func (s *SonarQubeClient) SonarQube() *sonargo.Client {
+func (s *Client) SonarQube() *sonargo.Client {
 	return s.client
 }

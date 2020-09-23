@@ -1,3 +1,19 @@
+/*
+Copyright 2020 KubeSphere Authors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package destinationrule
 
 import (
@@ -199,7 +215,7 @@ func (v *DestinationRuleController) processNextWorkItem() bool {
 func (v *DestinationRuleController) syncService(key string) error {
 	startTime := time.Now()
 	defer func() {
-		log.V(4).Info("Finished syncing service destinationrule.", "key", key, "duration", time.Since(startTime))
+		log.V(4).Infof("Finished syncing service destinationrule %s in %s.", key, time.Since(startTime))
 	}()
 
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
@@ -212,14 +228,14 @@ func (v *DestinationRuleController) syncService(key string) error {
 		// delete the corresponding destinationrule if there is any, as the service has been deleted.
 		err = v.destinationRuleClient.NetworkingV1alpha3().DestinationRules(namespace).Delete(name, nil)
 		if err != nil && !errors.IsNotFound(err) {
-			log.Error(err, "delete destination rule failed", "namespace", namespace, "name", name)
+			log.Errorf("delete destination rule failed %s/%s, error %v.", namespace, name, err)
 			return err
 		}
 
 		// delete orphan service policy if there is any
 		err = v.servicemeshClient.ServicemeshV1alpha2().ServicePolicies(namespace).Delete(name, nil)
 		if err != nil && !errors.IsNotFound(err) {
-			log.Error(err, "delete orphan service policy failed", "namespace", namespace, "name", name)
+			log.Errorf("delete orphan service policy %s/%s failed, %#v", namespace, name, err)
 			return err
 		}
 
@@ -259,7 +275,7 @@ func (v *DestinationRuleController) syncService(key string) error {
 		version := util.GetComponentVersion(&deployment.ObjectMeta)
 
 		if len(version) == 0 {
-			log.V(4).Info("Deployment doesn't have a version label", "key", types.NamespacedName{Namespace: deployment.Namespace, Name: deployment.Name}.String())
+			log.V(4).Infof("Deployment %s doesn't have a version label", types.NamespacedName{Namespace: deployment.Namespace, Name: deployment.Name}.String())
 			continue
 		}
 

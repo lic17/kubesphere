@@ -1,8 +1,24 @@
+/*
+Copyright 2020 KubeSphere Authors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package servicemesh
 
 import "github.com/spf13/pflag"
 
-type ServiceMeshOptions struct {
+type Options struct {
 
 	// istio pilot discovery service url
 	IstioPilotHost string `json:"istioPilotHost,omitempty" yaml:"istioPilotHost"`
@@ -15,21 +31,21 @@ type ServiceMeshOptions struct {
 }
 
 // NewServiceMeshOptions returns a `zero` instance
-func NewServiceMeshOptions() *ServiceMeshOptions {
-	return &ServiceMeshOptions{
+func NewServiceMeshOptions() *Options {
+	return &Options{
 		IstioPilotHost:            "",
 		JaegerQueryHost:           "",
 		ServicemeshPrometheusHost: "",
 	}
 }
 
-func (s *ServiceMeshOptions) Validate() []error {
+func (s *Options) Validate() []error {
 	errors := []error{}
 
 	return errors
 }
 
-func (s *ServiceMeshOptions) ApplyTo(options *ServiceMeshOptions) {
+func (s *Options) ApplyTo(options *Options) {
 	if s.ServicemeshPrometheusHost != "" {
 		options.ServicemeshPrometheusHost = s.ServicemeshPrometheusHost
 	}
@@ -43,13 +59,13 @@ func (s *ServiceMeshOptions) ApplyTo(options *ServiceMeshOptions) {
 	}
 }
 
-func (s *ServiceMeshOptions) AddFlags(fs *pflag.FlagSet) {
-	fs.StringVar(&s.IstioPilotHost, "istio-pilot-host", s.IstioPilotHost, ""+
+func (s *Options) AddFlags(fs *pflag.FlagSet, c *Options) {
+	fs.StringVar(&s.IstioPilotHost, "istio-pilot-host", c.IstioPilotHost, ""+
 		"istio pilot discovery service url")
 
-	fs.StringVar(&s.JaegerQueryHost, "jaeger-query-host", s.JaegerQueryHost, ""+
+	fs.StringVar(&s.JaegerQueryHost, "jaeger-query-host", c.JaegerQueryHost, ""+
 		"jaeger query service url")
 
-	fs.StringVar(&s.ServicemeshPrometheusHost, "servicemesh-prometheus-host", s.ServicemeshPrometheusHost, ""+
+	fs.StringVar(&s.ServicemeshPrometheusHost, "servicemesh-prometheus-host", c.ServicemeshPrometheusHost, ""+
 		"prometheus service for servicemesh")
 }
